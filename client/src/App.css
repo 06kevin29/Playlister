@@ -6,14 +6,15 @@
     
         @author McKilla Gorilla
     */
-  --swatch-foundation: #eeeedd;
-  --swatch-primary: #e6e6e6;
-  --swatch-complement: #e1e4cb;
+  --swatch-foundation: #252525;
+  --swatch-primary: #303030;
+  --swatch-complement: #353535;
   --swatch-contrast: #111111;
   --swatch-accent: #669966;
   --swatch-status: #123456;
   --my-font-family: "Robaaaoto";
   --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
+  background-color: var(--swatch-foundation);
 }
 
 body {
@@ -21,16 +22,18 @@ body {
 }
 
 #root {
-  background-color: var(--swatch-primary);
-  font-family: "Lexend Exa";
+  background-color: var(--swatch-foundation);
+  font-family: Helvetica, "Lexend Exa", sans-serif;
   position: absolute;
-  width: 80%;
-  left: 10%;
-  height: 90%;
-  top: 5%;
+  width: 100%;
+  left: 0%;
+  height: 95%;
+  bottom: 5%;
+
 }
 
 #app-root {
+  background-color: var(--swatch-foundation);
   position: absolute;
   width: 100%;
   height: 100%;
@@ -54,9 +57,9 @@ body {
   border-radius: 10px;
 }
 #splash-screen {
-  background-image: linear-gradient(to bottom, #08b8a1, #234367);
+  background-image: linear-gradient(to bottom, #000000, #5F23A5);
   color: white;
-  font-size: 5vw;
+  font-size: 36px;
   border-color: #123456;
   border-radius: 15px;
   padding-top: 5%;
@@ -65,6 +68,31 @@ body {
   font-weight: bold;
   text-align: center;
   vertical-align: center;
+}
+#splash-screen-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 2%;
+}
+.splash-screen-button{ 
+  background-image: linear-gradient(to bottom, #A51E93, #291133);
+  color: white;
+  height: 64px;
+  width: 145px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+}
+
+.splash-screen-button:hover{
+  background-image: linear-gradient(to bottom, #8c197c, #0f0613);
+  cursor: pointer;
+  color: lightgray;
+}
+
+#playlister-logo {
+  width: 400px;
 }
 
 #edit-toolbar {
@@ -93,6 +121,11 @@ body {
 }
 
 .list-card-button {
+  background-color: #303030;
+  color: whitesmoke;
+  border-width: 1px;
+  border-color: #252525;
+  border-radius: 10px;
   float:right;
   font-size:11pt;
   padding: 0px 4px;
@@ -123,7 +156,7 @@ body {
   top: 85%;
   width: 80%;
   height: 10%;
-  background-color: rgb(44, 124, 228);
+  background-color: #5F23A5;
   color:whitesmoke;
   display: flex;
   align-items: center;
@@ -148,23 +181,55 @@ body {
   position: absolute;
   pointer-events: none;
   left: 0%;
-  top: 0%;
+  top: 1%;
   width: 100%;
-  height: 7.5%;
+  height: 7%;
   text-align: center;
   font-size: 24pt;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: whitesmoke;
 }
 
 #add-list-button {
   pointer-events: auto;
   float: left;
+  background-color: #5F23A5;
+}
+#add-list-button:hover {
+  cursor: pointer;
+  background-color: #561f94;
+}
+
+#add-song-button {
+  background-color: #5F23A5;
+}
+#add-song-button:disabled {
+  background-color: #252525;
+}
+#undo-button {
+  background-color: #5F23A5;
+}
+#undo-button:disabled {
+  background-color: #252525;
+}
+#redo-button {
+  background-color: #5F23A5;
+}
+#redo-button:disabled {
+  background-color: #252525;
+}
+#close-button {
+  background-color: #5F23A5;
+}
+#close-button:disabled {
+  background-color: #252525;
 }
 
 #list-selector-list {
+  background-color: var(--swatch-complement);
   max-height: 83%;
   position: absolute;
   left: 0%;
@@ -176,13 +241,53 @@ body {
   overflow: scroll;
 }
 
+#firstName-label {
+  color: whitesmoke;
+  text-shadow:0px 4px 4px #000000;
+}
+#lastName-label {
+  color: whitesmoke;
+  text-shadow:0px 4px 4px #000000;
+}
+#email-label {
+  color: whitesmoke;
+  text-shadow:0px 4px 4px #000000;
+}
+#password-label {
+  color: whitesmoke;
+  text-shadow:0px 4px 4px #000000;
+}
+#passwordVerify-label {
+  color: whitesmoke;
+  text-shadow:0px 4px 4px #000000;
+}
+#firstName {
+  color: whitesmoke;
+}
+#lastName {
+  color: whitesmoke;
+}
+#email {
+  color: whitesmoke;
+}
+#password {
+  color: whitesmoke;
+}
+#passwordVerify {
+  color: whitesmoke;
+}
+
 .list-card,
 .selected-list-card,
 .unselected-list-card {
+  color: whitesmoke;
   font-size: 18pt;
   margin: 10px;
   padding: 20px;
   border-radius: 25px;
+}
+a {
+  color: #1976d2;
 }
 
 .list-card:aria-disabled,
@@ -262,6 +367,10 @@ input {
   font-size: 20pt;
 }
 
+.text-field{
+  color: whitesmoke;
+}
+
 .playlister-item,
 .playlister-item-dragged-to {
   text-align: left;
@@ -296,12 +405,12 @@ input {
   justify-content: center;
   padding: 1rem;
   background: var(--black);
-  color: var(--swatch-text);
+  color: whitesmoke;
   cursor: pointer;
   visibility: hidden;
   opacity: 0;
   transition: all 0.35s ease-in;
-  font-family: var(--font-primary);
+  font-family: Helvetica, sans-serif;
 }
 
 .modal.is-visible {
@@ -324,6 +433,7 @@ input {
 
 .modal-dialog > * {
   padding: 1rem;
+  color: whitesmoke;
 }
 
 .modal-header,
@@ -334,10 +444,11 @@ input {
 .modal-header {
   display: flex;
   color:white;
-  background-color: rgb(41, 110, 201);
+  background-color: #302399;;
   align-items: center;
   justify-content: space-between;
-  border-bottom: dotted;
+  border-bottom: solid;
+  border-color: #353535;
 }
 
 .modal-center {
@@ -369,6 +480,8 @@ input {
 
 .modal-button {
   margin: 5px;
+  border-radius: 5px;
+  
 }
 
 #close-modal-button {
@@ -377,7 +490,7 @@ input {
 
 .modal-south {
   text-align: center;
-  background-color: rgb(103, 144, 202);
+  background-color: #302399;;
 }
 
 /* ANIMATIONS

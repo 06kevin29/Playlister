@@ -35,11 +35,11 @@ export default function RegisterScreen() {
     }
 
     return (
-            <Container component="main" maxWidth="xs">
+            <Container style= {{color: 'whitesmoke'}} component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
+                        marginTop: 9,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -52,8 +52,8 @@ export default function RegisterScreen() {
                         Sign up
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                        <Grid container spacing={2} style= {{color: 'whitesmoke'}}>
+                            <Grid style= {{color: 'whitesmoke'}} item xs={12} sm={6}>
                                 <TextField
                                     autoComplete="fname"
                                     name="firstName"
@@ -108,6 +108,7 @@ export default function RegisterScreen() {
                             </Grid>
                         </Grid>
                         <Button
+                            style= {{color: 'whitesmoke', backgroundColor: '#5F23A5'}}
                             type="submit"
                             fullWidth
                             variant="contained"

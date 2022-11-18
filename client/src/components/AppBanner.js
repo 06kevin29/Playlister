@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import logo from './logo.png';
+
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
@@ -97,8 +99,11 @@ export default function AppBanner() {
     }
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+        <Box
+            style={{}}
+            sx={{ flexGrow: 1 }}>
+            <AppBar position="static" 
+                id = 'AppBanner' style={{backgroundColor: '#303030'}}>
                 <Toolbar>
                     <Typography                        
                         variant="h4"
@@ -106,7 +111,9 @@ export default function AppBanner() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}                        
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/' onClick={handleCloseList}>⌂</Link>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/' onClick={handleCloseList}>
+                            <img src={logo} style={{height: '48px', paddingTop: "6%"}} alt= '⬠'/>
+                        </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

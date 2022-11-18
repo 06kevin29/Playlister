@@ -42,7 +42,7 @@ function WorkspaceScreen() {
     if (store.currentList) {
         songList = <List 
             id="playlist-cards" 
-            sx={{ width: '100%', bgcolor: 'background.paper'}}
+            sx={{ width: '100%', bgcolor: '#404040'}}
         >
             {
                 store.currentList.songs.map((song, index) => (
