@@ -249,6 +249,10 @@ body {
   color: whitesmoke;
   text-shadow:0px 4px 4px #000000;
 }
+#userName-label {
+  color: whitesmoke;
+  text-shadow:0px 4px 4px #000000;
+}
 #email-label {
   color: whitesmoke;
   text-shadow:0px 4px 4px #000000;
@@ -265,6 +269,9 @@ body {
   color: whitesmoke;
 }
 #lastName {
+  color: whitesmoke;
+}
+#userName {
   color: whitesmoke;
 }
 #email {

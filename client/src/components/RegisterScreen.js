@@ -21,6 +21,7 @@ export default function RegisterScreen() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         auth.registerUser(
+            formData.get('userName'),
             formData.get('firstName'),
             formData.get('lastName'),
             formData.get('email'),
@@ -53,6 +54,16 @@ export default function RegisterScreen() {
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2} style= {{color: 'whitesmoke'}}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="userName"
+                                    label="Username"
+                                    name="userName"
+                                    autoComplete="uname"
+                                />
+                            </Grid>
                             <Grid style= {{color: 'whitesmoke'}} item xs={12} sm={6}>
                                 <TextField
                                     autoComplete="fname"
