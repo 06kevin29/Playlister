@@ -1,11 +1,20 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
+import SongCard from './SongCard.js';
+import MUIEditSongModal from './MUIEditSongModal';
+import MUIRemoveSongModal from './MUIRemoveSongModal';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
+import expand from './expand.png';
+import thumbsUp from './thumbsUp.png';
+import thumbsDown from './thumbsDown.png';
+import workspace from './WorkspaceScreen';
+import WorkspaceScreen from './WorkspaceScreen';
 
 /*
     This is a card in our list of playlists. It lets select
@@ -18,7 +27,8 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair, selected } = props;
+    const { idNamePair, selected, expanded } = props;
+    let showList = false;
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -73,30 +83,70 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+    
+    function handleOpenList(e) {
+        let button = document.getElementById('expandButton-'+idNamePair._id);
+        
+        if (!store.currentList) {
+            handleLoadList(e, idNamePair._id);
+            button.style.transform = 'rotate(180deg)';
+        }
+        else {
+            store.closeCurrentList();
+        }
+        
+    }
+    let songList = "";
+    if (store.currentList) {
+        if (store.currentList._id == idNamePair._id) {
+            songList = <List 
+                id="playlist-cards"
+                sx={{ width: '100%', bgcolor: '#404040'}}
+            >
+                {
+                    store.currentList.songs.map((song, index) => (
+                        <SongCard
+                            id={'playlist-song-' + (index)}
+                            key={'playlist-song-' + (index)}
+                            index={index}
+                            song={song}
+                        />
+                    ))  
+                    
+                }
+             </List>;
+        }
+    }
+    
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            style={{ width: '100%', fontSize: '48pt', color: 'whitesmoke', backgroundColor: '#202020', borderRadius: 8}}
+            style={{ width: '100%', fontSize: '24pt', color: 'whitesmoke', backgroundColor: '#202020', borderRadius: 8, display: 'flex', flexDirection: "column", cursor: 'default'}}
             button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
+            /*onClick={(event) => {
+                handleLoadList(event, idNamePair._id) 
+            }}*/
+            onDoubleClick= {handleToggleEdit}
         >
-            <Box sx={{ p: 1, flexGrow: 1, overflowX: 'auto' }}>{idNamePair.name}</Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton style={{color: 'whitesmoke'}} onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton style={{color: 'whitesmoke'}} onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
+            <div style={{display: 'flex', width: '100%'}}> 
+                <Box sx={{ p: 1, flexGrow: 1, overflowX: 'auto' }}>{idNamePair.name}<br></br>
+                    <div style={{fontSize: '12pt', paddingLeft: '10px'}}>by: {idNamePair.userName}</div>
+                </Box>
+                <div style={{paddingRight: 5}}><img src={thumbsUp} style={{width: '48px'}} /> {idNamePair.likes} <img src={thumbsDown} style={{width: '48px'}} /> {idNamePair.dislikes}</div>
+            </div>
+
+            <div  
+            style={{width: '100%', padding: 10}}>
+                {songList}
+            </div> 
+            <div style={{display: 'flex', width: '100%', fontSize: '16px', justifyContent: 'space-between', padding: 10}}>
+                <div style={{padding: '0px 20px 0px 20px'}}>Created: {idNamePair.date.toString().substring(0, 10)}</div>
+                <div style={{padding: '0px 20px 0px 20px'}}>Listens: {idNamePair.listens}</div>
+                <div><img id={'expandButton-' + idNamePair._id} onClick={handleOpenList} src={expand} style={{width: '24px', padding: '0px 20px 0px 20px', cursor: 'pointer'}}></img></div>
+            </div>
         </ListItem>
 
     if (editActive) {
@@ -119,8 +169,25 @@ function ListCard(props) {
             />
     }
     return (
-        cardElement
+        <Box>
+            {cardElement}
+            <MUIRemoveSongModal/>
+        </Box>
+        
     );
 }
-
+/* 
+<Box sx={{ p: 1 }}>
+                <IconButton style={{color: 'whitesmoke'}} onClick={handleToggleEdit} aria-label='edit'>
+                    <EditIcon style={{fontSize:'24pt'}} />
+                </IconButton>
+            </Box>
+            <Box sx={{ p: 1 }}>
+                <IconButton style={{color: 'whitesmoke'}} onClick={(event) => {
+                        handleDeleteList(event, idNamePair._id)
+                    }} aria-label='delete'>
+                    <DeleteIcon style={{fontSize:'24pt'}} />
+                </IconButton>
+            </Box> 
+*/
 export default ListCard;

@@ -280,6 +280,8 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        let button = document.getElementById('expandButton-'+store.currentList._id);
+        button.style.removeProperty('transform');
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
@@ -290,7 +292,7 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
-        let newListName = "Untitled" + store.newListCounter;
+        let newListName = auth.user.userName + " - Untitled (" + store.newListCounter + ")";
         console.log(auth.user)
         const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.userName, 0, 0, []);
         if (response.status === 201) {
@@ -308,6 +310,7 @@ function GlobalStoreContextProvider(props) {
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
+        history.push("/");
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
@@ -373,7 +376,9 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.REMOVE_SONG,
             payload: {currentSongIndex: songIndex, currentSong: songToRemove}
-        });        
+        });
+        console.log("removing song " + songIndex);
+        console.log(store.currentModal);        
     }
     store.hideModals = () => {
         storeReducer({
@@ -407,7 +412,8 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
                     });
-                    history.push("/playlist/" + playlist._id);
+                    //history.push("/playlist/" + playlist._id);
+                    history.push('/')
                 }
             }
         }

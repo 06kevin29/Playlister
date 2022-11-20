@@ -41,7 +41,7 @@ function WorkspaceScreen() {
     let songList = "";
     if (store.currentList) {
         songList = <List 
-            id="playlist-cards" 
+            id="playlist-cards"
             sx={{ width: '100%', bgcolor: '#404040'}}
         >
             {

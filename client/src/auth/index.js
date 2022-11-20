@@ -14,11 +14,19 @@ export const AuthActionType = {
     ERROR: "ERROR",
 }
 
+const view = {
+    NONE : "NONE",
+    HOME: "HOME",
+    ALL_LISTS : "ALL_LISTS",
+    USERS: "USERS"
+}
+
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
         errorMessage: "",
+        view: view.NONE
     });
     const history = useHistory();
 
@@ -34,6 +42,7 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: payload.loggedIn,
                     errorMessage: "",
+                    view: auth.view,
                 });
             }
             case AuthActionType.LOGIN_USER: {
@@ -41,6 +50,7 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: true,
                     errorMessage: "",
+                    view: view.HOME,
                 })
             }
             case AuthActionType.LOGOUT_USER: {
@@ -48,6 +58,7 @@ function AuthContextProvider(props) {
                     user: null,
                     loggedIn: false,
                     errorMessage: "",
+                    view: view.NONE,
                 })
             }
             case AuthActionType.REGISTER_USER: {
@@ -55,6 +66,7 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: true,
                     errorMessage: "",
+                    view: view.NONE,
                 })
             }
             case AuthActionType.ERROR: {
@@ -62,6 +74,7 @@ function AuthContextProvider(props) {
                     user: null,
                     loggedIn: false,
                     errorMessage: payload.errorMessage,
+                    view: auth.view,
                 })
             }
             default:
@@ -92,7 +105,8 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 })
-                auth.loginUser(email,password);
+                //auth.loginUser(email,password);
+                history.push('/login');
             }
         } catch (error) {
             console.log(error.response.data.errorMessage);
