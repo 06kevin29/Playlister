@@ -370,7 +370,7 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.EDIT_SONG,
             payload: {currentSongIndex: songIndex, currentSong: songToEdit}
-        });        
+        });      
     }
     store.showRemoveSongModal = (songIndex, songToRemove) => {
         storeReducer({

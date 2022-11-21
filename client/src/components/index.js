@@ -7,6 +7,7 @@ import LoginScreen from './LoginScreen'
 import MUIDeleteModal from './MUIDeleteModal'
 import MUIEditSongModal from './MUIEditSongModal'
 import MUIRemoveSongModal from './MUIRemoveSongModal'
+import PageBanner from './PageBanner'
 import RegisterScreen from './RegisterScreen'
 import SongCard from './SongCard'
 import SplashScreen from './SplashScreen'
@@ -28,6 +29,7 @@ export {
     MUIDeleteModal,
     MUIEditSongModal,
     MUIRemoveSongModal,
+    PageBanner,
     SongCard,
     RegisterScreen,
     SplashScreen,

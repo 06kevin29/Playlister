@@ -15,33 +15,38 @@ const style = {
 
 export default function MUIEditSongModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [ title, setTitle ] = useState(store.currentSong.title);
-    const [ artist, setArtist ] = useState(store.currentSong.artist);
-    const [ youTubeId, setYouTubeId ] = useState(store.currentSong.youTubeId);
+
+    let newTitle = '';
+    let newArtist = '';
+    let newYouTubeId = '';
+
+    if (store.currentList != null && store.currentSong != null) {
+        newTitle = store.currentSong.title;
+        newArtist = store.currentSong.artist;
+        newYouTubeId = store.currentSong.youTubeId
+    }
 
     function handleConfirmEditSong() {
         let newSongData = {
-            title: title,
-            artist: artist,
-            youTubeId: youTubeId
+            title: newTitle,
+            artist: newArtist,
+            youTubeId: newYouTubeId
         };
+        console.log(newSongData);
         store.addUpdateSongTransaction(store.currentSongIndex, newSongData);        
     }
-
     function handleCancelEditSong() {
         store.hideModals();
     }
 
     function handleUpdateTitle(event) {
-        setTitle(event.target.value);
+        newTitle = event.target.value;
     }
-
     function handleUpdateArtist(event) {
-        setArtist(event.target.value);
+        newArtist = event.target.value;
     }
-
     function handleUpdateYouTubeId(event) {
-        setYouTubeId(event.target.value);
+        newYouTubeId = event.target.value;
     }
 
     return (
@@ -70,9 +75,10 @@ export default function MUIEditSongModal() {
                                 <input 
                                     id="edit-song-modal-title-textfield" 
                                     className='modal-textfield' 
-                                    type="text" 
-                                    defaultValue={title} 
-                                    onChange={handleUpdateTitle} /><br/>
+                                    type="text"
+                                    defaultValue={newTitle}
+                                    onChange={handleUpdateTitle} 
+                                    /><br/>
                                 </div>
                                 <div className="col-left">
                                     <label htmlFor="edit-song-modal-artist">Artist:</label>
@@ -82,8 +88,9 @@ export default function MUIEditSongModal() {
                                     id="edit-song-modal-artist-textfield" 
                                     className='modal-textfield' 
                                     type="text" 
-                                    defaultValue={artist} 
-                                    onChange={handleUpdateArtist} /><br/>
+                                    defaultValue={newArtist}
+                                    onChange={handleUpdateArtist}
+                                    /><br/>
                                 </div>
                                 <div className="col-left">
                                     <label htmlFor="edit-song-modal-youtube-id">Youtube Id:</label>
@@ -93,8 +100,9 @@ export default function MUIEditSongModal() {
                                     id="edit-song-modal-youTubeId-textfield" 
                                     className='modal-textfield' 
                                     type="text" 
-                                    defaultValue={youTubeId} 
-                                    onChange={handleUpdateYouTubeId} /><br/>
+                                    defaultValue={newYouTubeId}
+                                    onChange={handleUpdateYouTubeId}
+                                    /><br/>
                                 </div>
                             </form>
                 </div>

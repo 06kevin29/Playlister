@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import SongCard from './SongCard.js';
 import MUIEditSongModal from './MUIEditSongModal';
 import MUIRemoveSongModal from './MUIRemoveSongModal';
+import EditToolbar from './EditToolbar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
@@ -99,22 +100,33 @@ function ListCard(props) {
     let songList = "";
     if (store.currentList) {
         if (store.currentList._id == idNamePair._id) {
-            songList = <List 
-                id="playlist-cards"
-                sx={{ width: '100%', bgcolor: '#404040'}}
-            >
-                {
-                    store.currentList.songs.map((song, index) => (
-                        <SongCard
-                            id={'playlist-song-' + (index)}
-                            key={'playlist-song-' + (index)}
-                            index={index}
-                            song={song}
-                        />
-                    ))  
-                    
-                }
-             </List>;
+            songList = (
+              <div>
+                <List
+                  id="playlist-cards"
+                  sx={{ width: "100%", bgcolor: "#404040" }}
+                >
+                  {store.currentList.songs.map((song, index) => (
+                    <SongCard
+                      id={"playlist-song-" + index}
+                      key={"playlist-song-" + index}
+                      index={index}
+                      song={song}
+                    />
+                  ))}
+                </List>
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "space-between",
+                    padding: 5,
+                  }}
+                >
+                  <EditToolbar />
+                </div>
+              </div>
+            );
         }
     }
     
@@ -172,6 +184,7 @@ function ListCard(props) {
         <Box>
             {cardElement}
             <MUIRemoveSongModal/>
+            <MUIEditSongModal />
         </Box>
         
     );
