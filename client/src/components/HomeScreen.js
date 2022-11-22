@@ -24,6 +24,7 @@ const HomeScreen = () => {
     function handleCreateNewList() {
         store.createNewList();
     }
+    
     let listCard = "";
     if (store) {
         listCard = 
@@ -39,6 +40,7 @@ const HomeScreen = () => {
                 ))
             }
             </List>;
+        console.log(store.idNamePairs);
     }
     
     return (

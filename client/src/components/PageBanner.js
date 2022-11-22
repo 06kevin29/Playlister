@@ -81,7 +81,7 @@ export default function PageBanner() {
             <div style={{width: '40%'}}>
             <form>
               <TextField
-                InputProps={{ sx: { width: 550 } }}
+                InputProps={{ sx: { width: 550, color: 'whitesmoke' } }}
                 id="search-bar"
                 className="text"
                 label="Search"
@@ -89,7 +89,7 @@ export default function PageBanner() {
                 placeholder=""
                 size="small"
               />
-              <IconButton type="submit" aria-label="search">
+              <IconButton aria-label="search" onClick={store.handleSearch}>
                 <SearchIcon style={{ fill: "whitesmoke" }} />
               </IconButton>
             </form>
