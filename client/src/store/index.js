@@ -24,6 +24,7 @@ export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
+    DUPLICATE_LIST: "DUPLICATE_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
@@ -128,6 +129,19 @@ function GlobalStoreContextProvider(props) {
             }
             // CREATE A NEW LIST
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter + 1,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                })
+            }
+            case GlobalStoreActionType.DUPLICATE_LIST: {                
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
@@ -312,6 +326,35 @@ function GlobalStoreContextProvider(props) {
         }
         history.push("/");
     }
+    store.duplicateList = async function () {
+        async function asyncDuplicateList() {
+            let response = await api.getPlaylistById(store.currentList._id);
+            if (response.data.success) {
+                let playlistToCopy = response.data.playlist
+                console.log(playlistToCopy)
+                let playlistName = "Copy of " + playlistToCopy.name
+                let response1 = await api.createPlaylist(playlistName, [], auth.user.email, auth.user.userName, 0, 0, []);
+                if (response1.status === 201) {
+                    playlistToCopy.name = playlistName
+                    let response2 = await api.updatePlaylistById(response1.data.playlist._id, playlistToCopy)
+                    console.log(response1.data.playlist._id);
+                    if (response2.data.success) {
+                        tps.clearAllTransactions();
+                        storeReducer({
+                            type: GlobalStoreActionType.DUPLICATE_LIST,
+                            payload: response2.data.playlist
+                        });
+                        console.log(response2.data)
+                        history.push("/playlist/" + response2.data.id);
+                        history.push("/");
+                    }
+                } else {
+                    console.log("API FAILED TO CREATE A NEW LIST");
+                }
+            }
+        }
+        asyncDuplicateList();
+    }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = function () {
@@ -337,6 +380,7 @@ function GlobalStoreContextProvider(props) {
     // showDeleteListModal, and hideDeleteListModal
     store.markListForDeletion = function (id) {
         async function getListToDelete(id) {
+            console.log(id);
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
@@ -377,8 +421,7 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.REMOVE_SONG,
             payload: {currentSongIndex: songIndex, currentSong: songToRemove}
         });
-        console.log("removing song " + songIndex);
-        console.log(store.currentModal);        
+        console.log(store.isEditSongModalOpen());    
     }
     store.hideModals = () => {
         storeReducer({

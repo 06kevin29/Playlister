@@ -16,6 +16,9 @@ import thumbsUp from './thumbsUp.png';
 import thumbsDown from './thumbsDown.png';
 import workspace from './WorkspaceScreen';
 import WorkspaceScreen from './WorkspaceScreen';
+import Button from '@mui/material/Button';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 /*
     This is a card in our list of playlists. It lets select
@@ -30,6 +33,15 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
     let showList = false;
+
+    const theme = createTheme({
+        palette: {
+          purple: {
+            main: '#5F23A5',
+            contrastText: '#f5f5f5',
+          },
+        },
+    });
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -84,7 +96,13 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
-    
+    let modalJSX = "";
+    if (store.isEditSongModalOpen()) {
+        modalJSX = <MUIEditSongModal />;
+    }
+    else if (store.isRemoveSongModalOpen()) {
+        modalJSX = <MUIRemoveSongModal />;
+    }
     function handleOpenList(e) {
         let button = document.getElementById('expandButton-'+idNamePair._id);
         
@@ -97,34 +115,63 @@ function ListCard(props) {
         }
         
     }
+
+    function handleDuplicateList(event) {
+        event.stopPropagation();
+        store.duplicateList();
+    }
+
     let songList = "";
     if (store.currentList) {
         if (store.currentList._id == idNamePair._id) {
             songList = (
               <div>
-                <List
-                  id="playlist-cards"
-                  sx={{ width: "100%", bgcolor: "#404040" }}
-                >
-                  {store.currentList.songs.map((song, index) => (
-                    <SongCard
-                      id={"playlist-song-" + index}
-                      key={"playlist-song-" + index}
-                      index={index}
-                      song={song}
-                    />
-                  ))}
-                </List>
-                <div
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    justifyContent: "space-between",
-                    padding: 5,
-                  }}
-                >
-                  <EditToolbar />
-                </div>
+                <ThemeProvider theme={theme}>
+                  <List
+                    id="playlist-cards"
+                    sx={{ width: "100%", bgcolor: "#404040" }}
+                  >
+                    {store.currentList.songs.map((song, index) => (
+                      <SongCard
+                        id={"playlist-song-" + index}
+                        key={"playlist-song-" + index}
+                        index={index}
+                        song={song}
+                      />
+                    ))}
+                  </List>
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "100%",
+                      justifyContent: "space-between",
+                      padding: 5,
+                    }}
+                  >
+                    <EditToolbar />
+                    <div
+                      style={{
+                        padding: "10px 15px 0px 10px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "28%",
+                      }}
+                    >
+                      <Button variant="contained" color="purple"
+                      onClick={(event) => {
+                        handleDuplicateList(event)
+                        }}>
+                        Duplicate
+                      </Button>
+                      <Button variant="contained" color="purple" 
+                        onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }}>
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </ThemeProvider>
               </div>
             );
         }
@@ -183,8 +230,7 @@ function ListCard(props) {
     return (
         <Box>
             {cardElement}
-            <MUIRemoveSongModal/>
-            <MUIEditSongModal />
+            {modalJSX}
         </Box>
         
     );

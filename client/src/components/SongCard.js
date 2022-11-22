@@ -3,13 +3,22 @@ import { GlobalStoreContext } from '../store'
 import Fab from '@mui/material/Fab'
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
-import EditSongModal from './MUIEditSongModal';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
     const { song, index } = props;
+
+    const theme = createTheme({
+      palette: {
+        purple: {
+          main: '#5F23A5',
+          contrastText: '#f5f5f5',
+        },
+      },
+  });
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
@@ -39,7 +48,9 @@ function SongCard(props) {
         store.addMoveSongTransaction(sourceIndex, targetIndex);
     }
     function handleRemoveSong(event) {
+        console.log('removing song')
         store.showRemoveSongModal(index, song);
+        console.log(store.currentModal)
     }
     /*function handleClick(event) {
         // DOUBLE CLICK IS FOR SONG EDITING
@@ -48,7 +59,8 @@ function SongCard(props) {
         }
     }*/
     function handleEditSong(event) {
-        store.showEditSongModal(index, song);
+      console.log("Editing song");
+      store.showEditSongModal(index, song);
     }
 
     let cardClass = "list-card unselected-list-card";
@@ -66,37 +78,45 @@ function SongCard(props) {
         //onClick={handleClick}
         style={{ display: "flex", justifyContent: "space-between" }}
       >
-        <div>
-          {index + 1}.
-          <a
-            id={"song-" + index + "-link"}
-            className="song-link"
-            target="_blank"
-            href={"https://www.youtube.com/watch?v=" + song.youTubeId}
+        <ThemeProvider theme={theme}>
+          <div>
+            {index + 1}.
+            <a
+              id={"song-" + index + "-link"}
+              className="song-link"
+              target="_blank"
+              href={"https://www.youtube.com/watch?v=" + song.youTubeId}
+            >
+              {song.title} by {song.artist}
+            </a>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              width: "11%",
+              justifyContent: "space-between",
+            }}
           >
-            {song.title} by {song.artist}
-          </a>
-        </div>
-        <div style={{display: 'flex', width: '11%', justifyContent: 'space-between'}}>
-          <Fab
-            color="primary"
-            aria-label="edit"
-            id={"edit-song-" + index}
-            onClick={handleEditSong}
-            style={{ height: "10px", width: "35px" }}
-          >
-            <EditIcon />
-          </Fab>
-          <Fab
-            color="primary"
-            aria-label="remove"
-            id={"remove-song-" + index}
-            onClick={handleRemoveSong}
-            style={{ height: "10px", width: "35px" }}
-          >
-            <CloseIcon />
-          </Fab>
-        </div>
+            <Fab
+              color="purple"
+              aria-label="edit"
+              id={"edit-song-" + index}
+              onClick={handleEditSong}
+              style={{ height: "10px", width: "35px" }}
+            >
+              <EditIcon />
+            </Fab>
+            <Fab
+              color="purple"
+              aria-label="remove"
+              id={"remove-song-" + index}
+              onClick={handleRemoveSong}
+              style={{ height: "10px", width: "35px" }}
+            >
+              <CloseIcon />
+            </Fab>
+          </div>
+        </ThemeProvider>
       </div>
     );
 }
