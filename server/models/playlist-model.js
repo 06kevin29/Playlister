@@ -23,7 +23,8 @@ const playlistSchema = new Schema(
             user: String
         }], required: true},
         published: { type: Boolean, required: true},
-        listens: {type: Number, required: true}
+        listens: {type: Number, required: true},
+        publishDate: {type: Date, required: true}
     },
     { timestamps: true },
 )

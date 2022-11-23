@@ -43,6 +43,13 @@ const CurrentModal = {
     EDIT_SONG : "EDIT_SONG",
     REMOVE_SONG : "REMOVE_SONG"
 }
+const sort = {
+    PUBLISH_DATE: "PUBLISH_DATE",
+    NAME: "NAME",
+    LISTENS: "LISTENS",
+    LIKES: "LIKES",
+    DISLIKES: "DISLIKES"
+}
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -309,6 +316,7 @@ function GlobalStoreContextProvider(props) {
         let newListName = auth.user.userName + " - Untitled (" + store.newListCounter + ")";
         console.log(auth.user)
         const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.userName, 0, 0, []);
+        console.log(response);
         if (response.status === 201) {
             tps.clearAllTransactions();
             let newList = response.data.playlist;
@@ -341,6 +349,8 @@ function GlobalStoreContextProvider(props) {
                     playlistToCopy.likes = 0;
                     playlistToCopy.dislikes = 0;
                     playlistToCopy.listens = 0;
+                    playlistToCopy.published = false;
+                    playlistToCopy.publishDate = new Date();
                     console.log(playlistToCopy);
                     let response2 = await api.updatePlaylistById(response1.data.playlist._id, playlistToCopy)
                     console.log(response1.data.playlist._id);
@@ -567,8 +577,10 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
+            console.log(store.currentList);
             const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
             if (response.data.success) {
+                console.log(response.data);
                 storeReducer({
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: store.currentList
@@ -576,6 +588,25 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncUpdateCurrentList();
+    }
+    store.publish = function () {
+      store.currentList.published = true;
+      store.currentList.publishDate = new Date();
+      console.log(store.currentList);
+      async function asyncUpdateCurrentList() {
+        console.log(store.currentList);
+        const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+        if (response.data.success) {
+            history.push("/playlist/" + store.currentList._id);
+            storeReducer({
+                type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
+                payload: {}
+            });
+            history.push('/');
+        }
+    }
+    asyncUpdateCurrentList();
+    
     }
 
 

@@ -136,7 +136,9 @@ getPlaylistPairs = async (req, res) => {
                             dislikes: list.dislikes,
                             date: list.createdAt,
                             listens: list.listens,
-                            songs: list.songs
+                            songs: list.songs,
+                            published: list.published,
+                            publishDate: list.publishDate
                         };
                         pairs.push(pair);
                     }
@@ -196,6 +198,8 @@ updatePlaylist = async (req, res) => {
                     list.likes = body.playlist.likes;
                     list.dislikes = body.playlist.dislikes;
                     list.listens = body.playlist.listens;
+                    list.published = body.playlist.published;
+                    list.publishDate = body.playlist.publishDate;
                     list
                         .save()
                         .then(() => {
@@ -223,11 +227,13 @@ updatePlaylist = async (req, res) => {
         asyncFindUser(playlist);
     })
 }
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
-    updatePlaylist
+    updatePlaylist,
+
 }

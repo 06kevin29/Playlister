@@ -62,6 +62,10 @@ function SongCard(props) {
       console.log("Editing song");
       store.showEditSongModal(index, song);
     }
+    let style = { height: "10px", width: "35px", visibility: 'visible' };
+    if (store.currentList.published) {
+      style = { height: "10px", width: "35px", visibility: 'hidden' }
+    }
 
     let cardClass = "list-card unselected-list-card";
     return (
@@ -74,7 +78,7 @@ function SongCard(props) {
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        draggable="true"
+        draggable={!store.currentList.published}
         //onClick={handleClick}
         style={{ display: "flex", justifyContent: "space-between" }}
       >
@@ -102,7 +106,7 @@ function SongCard(props) {
               aria-label="edit"
               id={"edit-song-" + index}
               onClick={handleEditSong}
-              style={{ height: "10px", width: "35px" }}
+              style={style}
             >
               <EditIcon />
             </Fab>
@@ -111,7 +115,7 @@ function SongCard(props) {
               aria-label="remove"
               id={"remove-song-" + index}
               onClick={handleRemoveSong}
-              style={{ height: "10px", width: "35px" }}
+              style={style}
             >
               <CloseIcon />
             </Fab>

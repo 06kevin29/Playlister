@@ -120,10 +120,56 @@ function ListCard(props) {
         event.stopPropagation();
         store.duplicateList();
     }
+    function handlePublish(event) {
+        event.stopPropagation();
+        store.publish();
+    }
 
     let songList = "";
+    let toolbar = <EditToolbar />;
+    let publishButton = '';
+    let buttonsStyle = {
+      padding: "10px 15px 0px 10px",
+      display: "flex",
+      justifyContent: "space-between",
+      width: "28%",
+    };
+    let flexStyle = {
+      display: "flex",
+      width: "100%",
+      justifyContent: "end",
+      padding: 5,
+    };
+    if (!idNamePair.published) {
+        publishButton = (
+          <Button
+            variant="contained"
+            color="purple"
+            onClick={(event) => {
+                handlePublish(event)
+            }}
+          >
+            Publish
+          </Button>
+        );
+        buttonsStyle = {
+            padding: "10px 15px 0px 10px",
+            display: "flex",
+            justifyContent: "space-between",
+            width: "39%",
+        };
+        flexStyle = {
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+            padding: 5,
+        }
+    }
     if (store.currentList) {
         if (store.currentList._id == idNamePair._id) {
+            if (store.currentList.published) {
+                toolbar= "";
+            }
             songList = (
               <div>
                 <ThemeProvider theme={theme}>
@@ -141,21 +187,11 @@ function ListCard(props) {
                     ))}
                   </List>
                   <div
-                    style={{
-                      display: "flex",
-                      width: "100%",
-                      justifyContent: "space-between",
-                      padding: 5,
-                    }}
+                    style={flexStyle}
                   >
-                    <EditToolbar />
+                    {toolbar}
                     <div
-                      style={{
-                        padding: "10px 15px 0px 10px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: "28%",
-                      }}
+                      style={buttonsStyle}
                     >
                       <Button variant="contained" color="purple"
                       onClick={(event) => {
@@ -169,6 +205,7 @@ function ListCard(props) {
                         }}>
                         Delete
                       </Button>
+                      {publishButton}
                     </div>
                   </div>
                 </ThemeProvider>
@@ -177,7 +214,10 @@ function ListCard(props) {
         }
     }
     
-
+    let publishDate = '';
+    if (idNamePair.published) {
+        publishDate = idNamePair.publishDate.toString().substring(0, 10);
+    }
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -202,7 +242,7 @@ function ListCard(props) {
                 {songList}
             </div> 
             <div style={{display: 'flex', width: '100%', fontSize: '16px', justifyContent: 'space-between', padding: 10}}>
-                <div style={{padding: '0px 20px 0px 20px'}}>Created: {idNamePair.date.toString().substring(0, 10)}</div>
+                <div style={{padding: '0px 20px 0px 20px'}}>Published: {publishDate}</div>
                 <div style={{padding: '0px 20px 0px 20px'}}>Listens: {idNamePair.listens}</div>
                 <div><img id={'expandButton-' + idNamePair._id} onClick={handleOpenList} src={expand} style={{width: '24px', padding: '0px 20px 0px 20px', cursor: 'pointer'}}></img></div>
             </div>
