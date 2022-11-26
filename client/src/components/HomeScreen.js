@@ -3,12 +3,11 @@ import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 import PageBanner from './PageBanner'
-
+import Player from './Player'
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
-import { width } from '@mui/system';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -64,8 +63,8 @@ const HomeScreen = () => {
                     }
                     <MUIDeleteModal />
                 </div>
+                <Player />
             </div>
-            <div id = 'player'></div>
         </div>
         
     )

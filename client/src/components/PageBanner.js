@@ -86,52 +86,66 @@ export default function PageBanner() {
           style={{ backgroundColor: "transparent" }}
         >
           <Toolbar>
-            <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
             <div
               style={{
                 display: "flex",
+                width: "100%",
                 justifyContent: "space-between",
-                width: "8%",
-                paddingTop: 10
               }}
             >
-              <HomeIcon />
-              <GroupsIcon />
-              <PersonIcon />
-            </div>
-            <div style={{width: '40%'}}>
-            <form>
-              <TextField
-                InputProps={{ sx: { width: 550, color: 'whitesmoke' } }}
-                id="search-bar"
-                className="text"
-                label="Search"
-                variant="outlined"
-                placeholder=""
-                size="small"
-              />
-              <IconButton aria-label="search" onClick={store.handleSearch}>
-                <SearchIcon style={{ fill: "whitesmoke" }} />
-              </IconButton>
-            </form>
-            </div>
-            
-            <div>
-                Sort by
-            <IconButton
-                size="large"
-                edge="end"
-                aria-label="form of sorting"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleSortMenuOpen}
-                color="inherit"
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "8%",
+                  paddingTop: 10,
+                }}
               >
-                <SortIcon />
-              </IconButton>
+                <HomeIcon />
+                <GroupsIcon />
+                <PersonIcon />
+              </div>
+              <div style={{ width: "40%" }}>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <TextField
+                    InputProps={{ sx: { width: 550, color: "whitesmoke" } }}
+                    id="search-bar"
+                    className="text"
+                    label="Search"
+                    variant="outlined"
+                    placeholder=""
+                    size="small"
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter")  {
+                        store.handleSearch();
+                      }
+                    }}
+                  />
+                  <IconButton aria-label="search" onClick={store.handleSearch}>
+                    <SearchIcon style={{ fill: "whitesmoke" }} />
+                  </IconButton>
+                </form>
+              </div>
+
+              <div>
+                Sort by
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="form of sorting"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleSortMenuOpen}
+                  color="inherit"
+                >
+                  <SortIcon />
+                </IconButton>
+              </div>
             </div>
-            </div>
-            
           </Toolbar>
         </AppBar>
         {sortMenu}
