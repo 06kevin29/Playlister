@@ -53,29 +53,53 @@ export default function PageBanner() {
       store.dislikesSort();
       handleMenuClose();
     }
+    const handleCreatedDateSort = () => {
+      store.createdDateSort();
+      handleMenuClose();
+    }
+    const handleEditDateSort = () => {
+      store.editedDateSort();
+      handleMenuClose();
+    }
+    let sortingOptions = (
+      <div>
+        <MenuItem onClick={handlePublishDateSort}>
+          Publish Date (Newest)
+        </MenuItem>
+        <MenuItem onClick={handleNameSort}>Name (A-Z)</MenuItem>
+        <MenuItem onClick={handleListensSort}>Listens (High to Low)</MenuItem>
+        <MenuItem onClick={handleLikesSort}>Likes (High to Low)</MenuItem>
+        <MenuItem onClick={handleDislikesSort}>Disikes (High to Low)</MenuItem>
+      </div>
+    );
     const menuId = 'sort-list-menu';
-    const sortMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={handlePublishDateSort}>Publish Date (Newest)</MenuItem>
-            <MenuItem onClick={handleNameSort}>Name (A-Z)</MenuItem>
-            <MenuItem onClick={handleListensSort}>Listens (High to Low)</MenuItem>
-            <MenuItem onClick={handleLikesSort}>Likes (High to Low)</MenuItem>
-            <MenuItem onClick={handleDislikesSort}>Disikes (High to Low)</MenuItem>
-        </Menu>
+    if (auth.view == 'HOME') {
+      sortingOptions = (
+        <div>
+          <MenuItem onClick={handleCreatedDateSort}>Creation Date (Newest)</MenuItem>
+          <MenuItem onClick={handleEditDateSort}>Last Edit Date (Newest)</MenuItem>
+          <MenuItem onClick={handleNameSort}>Name (A-Z)</MenuItem>
+        </div>
+      );
+    }
+    let sortMenu = (
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+      >
+        {sortingOptions}
+      </Menu>
     );
 
     return (

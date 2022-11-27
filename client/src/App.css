@@ -12,7 +12,7 @@
   --swatch-contrast: #111111;
   --swatch-accent: #669966;
   --swatch-status: #123456;
-  --my-font-family: "Robaaaoto";
+  --my-font-family: 'Montserrat';
   --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
   background-color: var(--swatch-foundation);
 }
@@ -23,7 +23,7 @@ body {
 
 #root {
   background-color: var(--swatch-foundation);
-  font-family: Helvetica, "Lexend Exa", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   position: absolute;
   width: 100%;
   left: 0%;
@@ -239,7 +239,13 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  overflow-y: scroll;
+}
+#comments {
+  overflow-y: scroll;
+}
+#comment-text-field-label {
+  color: whitesmoke;
 }
 #search-bar-label {
   color: whitesmoke;

@@ -115,6 +115,11 @@ function ListCard(props) {
         }
         
     }
+    function handleSetPlayerList(event, id) {
+        console.log("setting playerlist")
+        event.stopPropagation();
+        store.setPlayerList(id);
+    }
 
     function handleDuplicateList(event) {
         event.stopPropagation();
@@ -165,6 +170,7 @@ function ListCard(props) {
             padding: 5,
         }
     }
+    
     if (store.currentList) {
         if (store.currentList._id == idNamePair._id) {
             if (store.currentList.published) {
@@ -213,7 +219,30 @@ function ListCard(props) {
             );
         }
     }
-    
+    let cardStyle = {
+      width: "100%",
+      fontSize: "24pt",
+      color: "whitesmoke",
+      backgroundColor: "#202020",
+      borderRadius: 8,
+      display: "flex",
+      flexDirection: "column",
+      cursor: "default",
+    };
+    if (store.playerList) {
+        if (idNamePair._id == store.playerList._id) {
+            cardStyle = {
+                width: "100%",
+                fontSize: "24pt",
+                color: "whitesmoke",
+                backgroundColor: "#a51e93",
+                borderRadius: 8,
+                display: "flex",
+                flexDirection: "column",
+                cursor: "default",
+              };
+        }
+    }
     let publishDate = '';
     if (idNamePair.published) {
         publishDate = idNamePair.publishDate.toString().substring(0, 10);
@@ -223,14 +252,15 @@ function ListCard(props) {
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            style={{ width: '100%', fontSize: '24pt', color: 'whitesmoke', backgroundColor: '#202020', borderRadius: 8, display: 'flex', flexDirection: "column", cursor: 'default'}}
+            style={cardStyle}
             button
-            /*onClick={(event) => {
-                handleLoadList(event, idNamePair._id) 
-            }}*/
+            
             onDoubleClick= {handleToggleEdit}
         >
-            <div style={{display: 'flex', width: '100%'}}> 
+            <div style={{display: 'flex', width: '100%'}}
+                onClick={(event) => {
+                    handleSetPlayerList(event, idNamePair._id) 
+                }}> 
                 <Box sx={{ p: 1, flexGrow: 1, overflowX: 'auto' }}>{idNamePair.name}<br></br>
                     <div style={{fontSize: '12pt', paddingLeft: '10px'}}>by: {idNamePair.userName}</div>
                 </Box>

@@ -33,7 +33,8 @@ export const GlobalStoreActionType = {
     REMOVE_SONG: "REMOVE_SONG",
     HIDE_MODALS: "HIDE_MODALS",
     SORT_BY: "SORT_BY",
-    SET_PLAYER: "SET_PLAYER"
+    SET_PLAYER: "SET_PLAYER",
+    SET_PLAYER_LIST: "SET_PLAYER_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -211,7 +212,7 @@ function GlobalStoreContextProvider(props) {
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    playerList: payload,
+                    playerList: store.playerList,
                     player: store.player
                 });
             }
@@ -292,6 +293,21 @@ function GlobalStoreContextProvider(props) {
                     player: payload
                 });
             }
+            case GlobalStoreActionType.SET_PLAYER_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    playerList: payload,
+                    player: store.player
+                });
+            }
             default:
                 return store;
         }
@@ -323,6 +339,11 @@ function GlobalStoreContextProvider(props) {
                                         playlist: playlist
                                     }
                                 });
+                                console.log(playlist._id);
+                                console.log(store.playerList._id);
+                                if (playlist._id == store.playerList._id) {
+                                    document.getElementById('player-list-name').innerHTML = playlist.name;
+                                }
                             }
                         }
                         getListPairs(playlist);
@@ -332,6 +353,7 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncChangeListName(id);
+        history.push('/');
     }
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
@@ -413,11 +435,18 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getPlaylistPairs();
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
-                pairsArray.sort(function (a, b) {
-                  if (!a.published) return 1;
-                  if (!b.published) return -1;
-                  return new Date(b.date) - new Date(a.date);
-                });
+                if (auth.view === "HOME") {
+                  pairsArray.sort(function (a, b) {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                  });
+                } else {
+                  pairsArray.sort(function (a, b) {
+                    if (!a.published) return 1;
+                    if (!b.published) return -1;
+                    return new Date(b.publishDate) - new Date(a.publishDate);
+                  });
+                }
+
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: pairsArray
@@ -507,16 +536,7 @@ function GlobalStoreContextProvider(props) {
 
                 response = await api.updatePlaylistById(playlist._id, playlist);
                 if (response.data.success) {
-                    if (playlist.songs.length == 0) {
-                        document.getElementById('player-song-number').innerHTML = 0;
-                    } else {
-                        if (store.playerList) {
-                            if (store.playerList._id != playlist._id) {
-                                document.getElementById('player-song-number').innerHTML = 1;
-                            } 
-                        }
-                          
-                    }
+                    
                     storeReducer({
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
@@ -647,20 +667,43 @@ function GlobalStoreContextProvider(props) {
       console.log(store.currentList);
       async function asyncUpdateCurrentList() {
         console.log(store.currentList);
-        const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+        const response = await api.updatePlaylistById(
+          store.currentList._id,
+          store.currentList
+        );
         if (response.data.success) {
-            history.push("/playlist/" + store.currentList._id);
-            storeReducer({
-                type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
-                payload: {}
-            });
-            history.push('/');
+          history.push("/playlist/" + store.currentList._id);
+          storeReducer({
+            type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
+            payload: {},
+          });
+          history.push("/");
+        }
+      }
+      asyncUpdateCurrentList();
+    };
+
+    store.comment = function () {
+        if (auth.user && store.playerList) {
+            if (document.getElementById('comment-text-field').value != '') {
+                async function asyncUpdateCurrentList() {
+                    console.log(store.playerList);
+                    console.log(auth.user.userName)
+                    store.playerList.comments.push({comment: document.getElementById('comment-text-field').value, user: auth.user.userName})
+                    const response = await api.updatePlaylistById(
+                      store.playerList._id,
+                      store.playerList
+                    );
+                    if (response.data.success) {
+                      console.log(store.playerList.comments);
+                      history.push('/');
+                    }
+                  }
+                  asyncUpdateCurrentList();
+            }
+          
         }
     }
-    asyncUpdateCurrentList();
-    
-    }
-
 
     store.handleSearch = async function () {
         let searchBar = document.getElementById("search-bar");
@@ -687,11 +730,24 @@ function GlobalStoreContextProvider(props) {
         store.idNamePairs.sort(function(a,b) {
             if (!a.published) return 1;
             if (!b.published) return -1;
-            return new Date(b.date) - new Date(a.date);
+            return new Date(b.publishDate) - new Date(a.publishDate);
+        })
+        history.push('/')
+    }
+    store.createdDateSort = async function () {
+        store.idNamePairs.sort(function(a,b) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        })
+        history.push('/')
+    }
+    store.editedDateSort = async function () {
+        store.idNamePairs.sort(function(a,b) {
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
         })
         history.push('/')
     }
     store.nameSort = async function () {
+        console.log(store.idNamePairs);
         store.idNamePairs.sort(function(a, b){
             if(a.name.toLowerCase() < b.name.toLowerCase()) { return -1; }
             if(a.name.toLowerCase > b.name.toLowerCase) { return 1; }
@@ -723,6 +779,30 @@ function GlobalStoreContextProvider(props) {
             payload: player
         })
     }
+    store.setPlayerList = function (id) {
+      async function asyncSetPlayerList(id) {
+        let response = await api.getPlaylistById(id);
+        if (response.data.success) {
+          let playlist = response.data.playlist;
+          if (playlist.songs.length == 0) {
+            document.getElementById("player-song-number").innerHTML = 0;
+          } else {
+            if (store.playerList) {
+              if (store.playerList._id != playlist._id) {
+                document.getElementById("player-song-number").innerHTML = 1;
+              }
+            }
+          }
+          storeReducer({
+            type: GlobalStoreActionType.SET_PLAYER_LIST,
+            payload: playlist,
+          });
+          //history.push("/playlist/" + playlist._id);
+          history.push("/");
+        }
+      }
+      asyncSetPlayerList(id);
+    };
 
     store.undo = function () {
         if (store.currentModal === CurrentModal.NONE)
