@@ -73,7 +73,7 @@ function ListCard(props) {
 
     function handleToggleEdit(event) {
         event.stopPropagation();
-        toggleEdit();
+        if (auth.visitor === "REGISTERED" && auth.view === "HOME") {toggleEdit();}
     }
 
     function toggleEdit() {
@@ -226,7 +226,10 @@ function ListCard(props) {
                     <div
                       style={buttonsStyle}
                     >
-                      <Button variant="contained" color="purple"
+                      <Button
+                      disabled= {auth.visitor === "GUEST"} 
+                      variant="contained" 
+                      color="purple"
                       onClick={(event) => {
                         handleDuplicateList(event)
                         }}>

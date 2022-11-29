@@ -61,6 +61,10 @@ export default function AppBanner() {
             <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
         </Menu>
     );
+    let menuMsg = "Logout";
+    if (auth.visitor === "GUEST") {
+        menuMsg = "Return To Start Screen"
+    }
     const loggedInMenu = 
         <Menu
             anchorEl={anchorEl}
@@ -77,7 +81,7 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>{menuMsg}</MenuItem>
         </Menu>        
 
     let editToolbar = "";
@@ -92,7 +96,7 @@ export default function AppBanner() {
     function getAccountMenu(loggedIn) {
         let userInitials = auth.getUserInitials();
         console.log("userInitials: " + userInitials);
-        if (loggedIn) 
+        if (loggedIn && auth.vistor === "REGISTERED") 
             return <div>{userInitials}</div>;
         else
             return <AccountCircle />;

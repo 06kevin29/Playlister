@@ -14,7 +14,8 @@ export const AuthActionType = {
     ERROR: "ERROR",
     VIEW_HOME: "VIEW_HOME",
     VIEW_ALL_LISTS: "VIEW_ALL_LISTS",
-    VIEW_USERS: "VIEW_USERS"
+    VIEW_USERS: "VIEW_USERS",
+    GUEST: "GUEST"
 }
 
 const view = {
@@ -118,6 +119,15 @@ function AuthContextProvider(props) {
                     visitor: auth.visitor
                 })
             }
+            case AuthActionType.GUEST: {
+                return setAuth({
+                    user: payload.user,
+                    loggedIn: true,
+                    errorMessage: "",
+                    view: view.ALL_LISTS,
+                    visitor: visitor.GUEST
+                })
+            }
             default:
                 return auth;
         }
@@ -180,6 +190,40 @@ function AuthContextProvider(props) {
                     errorMessage: error.response.data.errorMessage
                 }
             });
+        }
+    }
+    auth.useAsGuest = async function () {
+        try {
+            let response = await api.registerUser("Guest", "Guest", "User", "guest@playlister.stonybrook.org", "password", "password");
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.GUEST,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                response = await api.loginUser("guest@playlister.stonybrook.org","password");
+                if (response.status === 200) {
+                    authReducer({
+                        type: AuthActionType.GUEST,
+                        payload: {
+                            user: response.data.user
+                        }
+                    })
+                    history.push("/");
+                }
+            }
+        } catch (error) {
+            let response2 = await api.loginUser("guest@playlister.stonybrook.org","password");
+            if (response2.status === 200) {
+                authReducer({
+                    type: AuthActionType.GUEST,
+                    payload: {
+                        user: response2.data.user
+                    }
+                })
+                history.push("/");
+            }
         }
     }
 

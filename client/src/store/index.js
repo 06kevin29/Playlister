@@ -442,12 +442,14 @@ function GlobalStoreContextProvider(props) {
             }
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
+                console.log(auth.view);
                 if (auth.view === "HOME") {
                   pairsArray.sort(function (a, b) {
                     return new Date(b.createdAt) - new Date(a.createdAt);
                   });
                 } else {
-                    pairsArray.filter(function (idNamePair) {
+                    
+                    pairsArray = pairsArray.filter(function (idNamePair) {
                       return idNamePair.published;
                     });
                     pairsArray.sort(function (a, b) {

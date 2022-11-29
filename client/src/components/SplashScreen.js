@@ -1,5 +1,10 @@
 import logo from './logo.png';
+import AuthContext from '../auth'
+import { useContext } from 'react';
+import { GlobalStoreContext } from '../store'
 export default function SplashScreen() {
+    const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     return (
         <div id="splash-screen">
             Welcome to <br></br>
@@ -33,7 +38,14 @@ export default function SplashScreen() {
                         e.preventDefault();
                         window.location.href = "/login"}}>
                         Login</button>
-                <button class = 'splash-screen-button'>Continue as<br></br>Guest</button>
+                <button
+                    type='button' 
+                    class = 'splash-screen-button'
+                    onClick={(e) => {
+                        e.preventDefault();
+                        auth.useAsGuest()
+                        store.loadIdNamePairs()}}>
+                    Continue as<br></br>Guest</button>
             </div>  
         </div>
     )

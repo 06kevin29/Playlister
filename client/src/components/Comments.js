@@ -40,7 +40,7 @@ function Comments() {
           variant="standard"
           placeholder=""
           size="small"
-          disabled={!store.playerList.published}
+          disabled={!store.playerList.published || auth.visitor === "GUEST"}
           style={{ paddingTop: 20 }}
           onKeyPress={(event) => {
             if (event.key === "Enter") {
