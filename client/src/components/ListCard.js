@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth'
 import Box from '@mui/material/Box';
 import SongCard from './SongCard.js';
 import MUIEditSongModal from './MUIEditSongModal';
@@ -18,6 +19,11 @@ import workspace from './WorkspaceScreen';
 import WorkspaceScreen from './WorkspaceScreen';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import Fab from '@mui/material/Fab'
+import { useHistory } from 'react-router-dom'
+
 
 
 /*
@@ -29,10 +35,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected, expanded } = props;
     let showList = false;
+    const [isClicked, setIsClicked] = useState(false);
 
     const theme = createTheme({
         palette: {
@@ -40,9 +48,15 @@ function ListCard(props) {
             main: '#5F23A5',
             contrastText: '#f5f5f5',
           },
+          buttons: {
+            main: "#303030",
+            contrastText: "#f5f5f5",
+          },
         },
     });
-
+    function handleLikedOrDisliked() {
+        if(!isClicked) setIsClicked(true);
+    }
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
@@ -170,7 +184,20 @@ function ListCard(props) {
             padding: 5,
         }
     }
-    
+    let deleteButton = (
+      <Button
+        variant="contained"
+        color="purple"
+        onClick={(event) => {
+          handleDeleteList(event, idNamePair._id);
+        }}
+      >
+        Delete
+      </Button>
+    );
+    if (auth.view === 'ALL_LISTS' || auth.view === 'USERS') {
+        deleteButton = '';
+    }
     if (store.currentList) {
         if (store.currentList._id == idNamePair._id) {
             if (store.currentList.published) {
@@ -205,12 +232,7 @@ function ListCard(props) {
                         }}>
                         Duplicate
                       </Button>
-                      <Button variant="contained" color="purple" 
-                        onClick={(event) => {
-                            handleDeleteList(event, idNamePair._id)
-                        }}>
-                        Delete
-                      </Button>
+                      {deleteButton}
                       {publishButton}
                     </div>
                   </div>
@@ -247,36 +269,98 @@ function ListCard(props) {
     if (idNamePair.published) {
         publishDate = idNamePair.publishDate.toString().substring(0, 10);
     }
-    let cardElement =
-        <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            style={cardStyle}
-            button
-            
-            onDoubleClick= {handleToggleEdit}
+    let likeButton = (
+        <Fab
+        size="small"
+        id={"like-button-" + idNamePair._id}
+        color="purple"
+        disabled={auth.visitor === "GUEST" || auth.view ==="HOME" || isClicked }
+        onClick={(event) => {
+            event.stopPropagation();
+            store.like();
+            handleLikedOrDisliked();
+          }}
+      >
+        <ThumbUpIcon />
+      </Fab>
+    );
+    let dislikeButton = (<Fab
+        size="small"
+        id={"dislike-button-" + idNamePair._id}
+        color="purple"
+        disabled={auth.visitor === "GUEST" || auth.view === "HOME" || isClicked}
+        onClick={(event) => {
+            event.stopPropagation();
+            store.dislike();
+            handleLikedOrDisliked();
+        }}
+    >
+        <ThumbDownIcon />
+    </Fab>);
+    
+    let cardElement = (
+      <ListItem
+        id={idNamePair._id}
+        key={idNamePair._id}
+        sx={{ marginTop: "15px", display: "flex", p: 1 }}
+        style={cardStyle}
+        button
+        onDoubleClick={handleToggleEdit}
+      >
+        <div
+          style={{ display: "flex", width: "100%" }}
+          onClick={(event) => {
+            handleSetPlayerList(event, idNamePair._id);
+          }}
         >
-            <div style={{display: 'flex', width: '100%'}}
-                onClick={(event) => {
-                    handleSetPlayerList(event, idNamePair._id) 
-                }}> 
-                <Box sx={{ p: 1, flexGrow: 1, overflowX: 'auto' }}>{idNamePair.name}<br></br>
-                    <div style={{fontSize: '12pt', paddingLeft: '10px'}}>by: {idNamePair.userName}</div>
-                </Box>
-                <div style={{paddingRight: 5}}><img src={thumbsUp} style={{width: '48px'}} /> {idNamePair.likes} <img src={thumbsDown} style={{width: '48px'}} /> {idNamePair.dislikes}</div>
+          <Box sx={{ p: 1, flexGrow: 1, overflowX: "auto" }}>
+            {idNamePair.name}
+            <br></br>
+            <div style={{ fontSize: "12pt", paddingLeft: "10px" }}>
+              by: {idNamePair.ownerUserName}
             </div>
+          </Box>
+          <div style={{ padding: 5, display:'flex', flexDirection: 'row'}}>
+            <ThemeProvider theme={theme}>
+             {likeButton}
+                <div id = {'like-counter-'+ idNamePair._id}>{idNamePair.likes}</div>
+              {dislikeButton}
+                 <div id = {'dislike-counter-' + idNamePair._id} style={{padding: '0px 5px 0px 5px'}}>{idNamePair.dislikes}</div>
+            </ThemeProvider>
+          </div>
+        </div>
 
-            <div  
-            style={{width: '100%', padding: 10}}>
-                {songList}
-            </div> 
-            <div style={{display: 'flex', width: '100%', fontSize: '16px', justifyContent: 'space-between', padding: 10}}>
-                <div style={{padding: '0px 20px 0px 20px'}}>Published: {publishDate}</div>
-                <div style={{padding: '0px 20px 0px 20px'}}>Listens: {idNamePair.listens}</div>
-                <div><img id={'expandButton-' + idNamePair._id} onClick={handleOpenList} src={expand} style={{width: '24px', padding: '0px 20px 0px 20px', cursor: 'pointer'}}></img></div>
-            </div>
-        </ListItem>
+        <div style={{ width: "100%", padding: 10 }}>{songList}</div>
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            fontSize: "16px",
+            justifyContent: "space-between",
+            padding: 10,
+          }}
+        >
+          <div style={{ padding: "0px 20px 0px 20px" }}>
+            Published: {publishDate}
+          </div>
+          <div style={{ padding: "0px 20px 0px 20px" }}>
+            Listens: <div id={'listens-counter-'+idNamePair._id}>{idNamePair.listens}</div>
+          </div>
+          <div>
+            <img
+              id={"expandButton-" + idNamePair._id}
+              onClick={handleOpenList}
+              src={expand}
+              style={{
+                width: "24px",
+                padding: "0px 20px 0px 20px",
+                cursor: "pointer",
+              }}
+            ></img>
+          </div>
+        </div>
+      </ListItem>
+    );
 
     if (editActive) {
         cardElement =

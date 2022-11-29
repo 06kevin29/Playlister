@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import { Link } from 'react-router-dom'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 
@@ -9,21 +8,30 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 
 import HomeIcon from '@mui/icons-material/Home';
 import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
-import Home from '@mui/icons-material/Home';
 import SortIcon from '@mui/icons-material/Sort';
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
+import Fab from '@mui/material/Fab'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export default function PageBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+
+    const theme = createTheme({
+      palette: {
+        buttons: {
+          main: "#303030",
+          contrastText: "#f5f5f5",
+        },
+      },
+    });
 
     const handleSortMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -61,6 +69,21 @@ export default function PageBanner() {
       store.editedDateSort();
       handleMenuClose();
     }
+    const handleGoHome = () => {
+      if (auth) {
+        store.goHome();
+      }
+    }
+    const handleGoAllLists = () => {
+      if (auth) {
+        store.goAllLists();
+      }
+    }
+    const handleGoUsers = () => {
+      if (auth) {
+        store.goUsers();
+      }
+    }
     let sortingOptions = (
       <div>
         <MenuItem onClick={handlePublishDateSort}>
@@ -73,7 +96,7 @@ export default function PageBanner() {
       </div>
     );
     const menuId = 'sort-list-menu';
-    if (auth.view == 'HOME') {
+    if (auth.view === 'HOME') {
       sortingOptions = (
         <div>
           <MenuItem onClick={handleCreatedDateSort}>Creation Date (Newest)</MenuItem>
@@ -121,13 +144,21 @@ export default function PageBanner() {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  width: "8%",
+                  width: "10%",
                   paddingTop: 10,
                 }}
               >
-                <HomeIcon />
-                <GroupsIcon />
-                <PersonIcon />
+                <ThemeProvider theme={theme}>
+                  <Fab size="small" color='buttons' disabled={auth.visitor === "GUEST"} onClick={handleGoHome}>
+                    <HomeIcon />
+                  </Fab>
+                  <Fab size="small" color='buttons' onClick={handleGoAllLists}>
+                    <GroupsIcon />
+                  </Fab>
+                  <Fab size="small" color='buttons' onClick={handleGoUsers}>
+                    <PersonIcon />
+                  </Fab>
+                </ThemeProvider>
               </div>
               <div style={{ width: "40%" }}>
                 <form
@@ -144,7 +175,7 @@ export default function PageBanner() {
                     placeholder=""
                     size="small"
                     onKeyPress={(event) => {
-                      if (event.key === "Enter")  {
+                      if (event.key === "Enter") {
                         store.handleSearch();
                       }
                     }}

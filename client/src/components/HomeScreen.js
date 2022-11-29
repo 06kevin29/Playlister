@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth';
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 import PageBanner from './PageBanner'
@@ -15,6 +16,7 @@ import Typography from '@mui/material/Typography'
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext)
 
     useEffect(() => {
         store.loadIdNamePairs();
@@ -41,22 +43,44 @@ const HomeScreen = () => {
             </List>;
         console.log(store.idNamePairs);
     }
-    
+    let heading = (<div id="list-selector-heading"></div>);
+    console.log(auth)
+    if (auth) {
+      if (auth.view === "HOME") {
+        heading = (
+          <div  id="list-selector-heading">
+            <Fab
+              color="primary"
+              aria-label="add"
+              id="add-list-button"
+              onClick={handleCreateNewList}
+            >
+              <AddIcon />
+            </Fab>
+            <Typography variant="h2">Your Lists</Typography>
+          </div>
+        );
+      }
+      else if (auth.view === "ALL_LISTS") {
+        heading = (
+          <div id="list-selector-heading">
+            <Typography variant="h2">All Lists</Typography>
+          </div>
+        );
+      }
+      else if (auth.view === "USERS") {
+        heading = (
+            <div id="list-selector-heading">
+              <Typography variant="h2">Users</Typography>
+            </div>
+          );
+      }
+    }
     return (
         <div>
             <PageBanner />
             <div id="playlist-selector">
-                <div id="list-selector-heading">
-                <Fab 
-                    color="primary" 
-                    aria-label="add"
-                    id="add-list-button"
-                    onClick={handleCreateNewList}
-                >
-                    <AddIcon />
-                </Fab>
-                    <Typography variant="h2">Your Lists</Typography>
-                </div>
+                {heading}
                 <div id="list-selector-list">
                     {
                         listCard

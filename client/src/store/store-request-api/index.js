@@ -52,6 +52,7 @@ export const publishPlaylistById = (id, playlist) => {
         playlist : playlist
     })
 }
+export const getPlaylists = () => api.get('/playlists');
 
 const apis = {
     createPlaylist,
@@ -59,7 +60,8 @@ const apis = {
     getPlaylistById,
     getPlaylistPairs,
     updatePlaylistById,
-    publishPlaylistById
+    publishPlaylistById,
+    getPlaylists
 }
 
 export default apis
