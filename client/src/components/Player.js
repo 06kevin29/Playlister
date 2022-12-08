@@ -17,7 +17,6 @@ const Player = () => {
     let artist = '';
     let songs = [];
     let videoId = '';
-    let ids = [];
     let opts = {
       height: "324",
       width: "608",
@@ -28,20 +27,20 @@ const Player = () => {
     };
 
     if (store.playerList) {
-        if (store.playerList._id != id) {
+        console.log(store.playerList._id);
+        console.log(id);
+        if (store.playerList._id !== id) {
           songNumber = 0;
         list = store.playerList;
-        songs = list.songs;
+        songs = store.playerList.songs;
         console.log(songs);
         if (songs.length > 0) {
           title = songs[songNumber].title;
           artist = songs[songNumber].artist;
         }
-        
-        for (let i = 0; i < songs.length; i++) {
-          ids[i] = songs[i].youTubeId
-        }
-        videoId = ids[songNumber];
+        id = store.playerList._id;
+        console.log(id);
+        videoId = songs[songNumber].youTubeId;
         } 
     }
 
@@ -50,10 +49,10 @@ const Player = () => {
       console.log(songs.length);
       if (songNumber < songs.length) {
         songNumber++;
-        if (songs.length > 0) {
+        if (songs.length+1 > 0) {
           title = songs[songNumber].title;
           artist = songs[songNumber].artist;
-          videoId = ids[songNumber]
+          videoId = songs[songNumber].youTubeId;
         }
         document.getElementById('player-song-number').innerHTML = songNumber+1;
         document.getElementById('player-song-title').innerHTML = title;
@@ -68,7 +67,24 @@ const Player = () => {
       store.player.pauseVideo();
     }
     function handleSkip() {
-      store.player.seekTo(999999);
+      
+      if (songNumber+1 < songs.length) {
+        songNumber++;
+        if (songs.length > 0) {
+          title = songs[songNumber].title;
+          artist = songs[songNumber].artist;
+          videoId = songs[songNumber].youTubeId;
+        }
+        document.getElementById('player-song-number').innerHTML = songNumber+1;
+        document.getElementById('player-song-title').innerHTML = title;
+        document.getElementById('player-song-artist').innerHTML = artist;
+        store.player.loadVideoById(videoId);
+      }
+      else {
+        store.player.seekTo(9999999);
+      }
+      console.log(songNumber);
+      console.log(songs.length);
     }
     function handleBack(event) {
       if (songNumber <= 0) {
@@ -78,7 +94,7 @@ const Player = () => {
         console.log(songNumber)
           title = songs[songNumber].title;
           artist = songs[songNumber].artist;
-          videoId = ids[songNumber];
+          videoId = songs[songNumber].youTubeId;;
         document.getElementById('player-song-number').innerHTML = songNumber+1;
         document.getElementById('player-song-title').innerHTML = title;
         document.getElementById('player-song-artist').innerHTML = artist;

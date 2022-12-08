@@ -856,6 +856,8 @@ function GlobalStoreContextProvider(props) {
             document.getElementById("player-song-number").innerHTML = 0;
           } else {
             if (store.playerList) {
+                console.log(store.playerList._id);
+                console.log(playlist._id);
               if (store.playerList._id != playlist._id) {
                 document.getElementById("player-song-number").innerHTML = 1;
               }

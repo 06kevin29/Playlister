@@ -313,6 +313,7 @@ function ListCard(props) {
         <div
           style={{ display: "flex", width: "100%" }}
           onClick={(event) => {
+            console.log("SET PLAYER LIST")
             handleSetPlayerList(event, idNamePair._id);
           }}
         >
